@@ -7,10 +7,11 @@ from app.graph.state import AgentState
 
 async def generate_sql_node(state: AgentState):
     """
-    Generates SQL using Gemini 2.5 Flash for high precision.
+    Generates SQL using Gemini 2.0 Flash for high precision.
     """
     messages = state.get("messages", [])
     schema_info = state.get("schema_info", "")
+    reasoning = state.get("reasoning", "")
     db_type = state.get("db_type", "postgresql")
     previous_error = state.get("error")
     previous_query = state.get("sql_query")
@@ -20,13 +21,16 @@ async def generate_sql_node(state: AgentState):
 
     # Use Gemini Flash for complex SQL generation.
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
+        model="gemini-2.0-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
     )
 
-    system_prompt = f"""You are a {db_type} expert. Generate a query based on the schema below.
+    system_prompt = f"""You are a {db_type} expert. Generate a query based on the schema and reasoning plan below.
 
     SCHEMA:
     {schema_info}
+
+    REASONING PLAN:
+    {reasoning}
 
     RULES:
     1. Return ONLY the raw SQL. No markdown, no formatting.

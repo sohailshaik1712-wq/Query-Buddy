@@ -14,6 +14,7 @@ class AgentState(TypedDict):
 
     # Intermediate steps
     schema_info: Optional[str]
+    reasoning: Optional[str]
     sql_query: Optional[str]
     query_results: Optional[List[Dict[str, Any]]]
 

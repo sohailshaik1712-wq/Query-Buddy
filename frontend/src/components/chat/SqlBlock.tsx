@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Terminal, Edit2, Play, Loader2 } from "lucide-react";
+import { Terminal, Edit2, Play, Loader2, Copy, Check } from "lucide-react";
 
 interface SqlBlockProps {
   sql: string;
@@ -10,11 +10,22 @@ interface SqlBlockProps {
 const SqlBlock = ({ sql, onExecute, isExecuting }: SqlBlockProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(sql);
+  const [copied, setCopied] = useState(false);
 
   const handleRun = async () => {
     if (!editValue.trim()) return;
     await onExecute(editValue.trim());
     setIsEditing(false);
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(sql);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy", err);
+    }
   };
 
   return (
@@ -48,16 +59,29 @@ const SqlBlock = ({ sql, onExecute, isExecuting }: SqlBlockProps) => {
               </button>
             </>
           ) : (
-            <button
-              onClick={() => {
-                setIsEditing(true);
-                setEditValue(sql);
-              }}
-              className="flex items-center gap-1.5 px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded text-[10px] font-bold transition-all border border-slate-700"
-            >
-              <Edit2 size={10} />
-              EDIT
-            </button>
+            <>
+              <button
+                onClick={handleCopy}
+                className="flex items-center gap-1.5 px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded text-[10px] font-bold transition-all border border-slate-700"
+              >
+                {copied ? (
+                  <Check size={10} className="text-emerald-400" />
+                ) : (
+                  <Copy size={10} />
+                )}
+                {copied ? "COPIED" : "COPY"}
+              </button>
+              <button
+                onClick={() => {
+                  setIsEditing(true);
+                  setEditValue(sql);
+                }}
+                className="flex items-center gap-1.5 px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded text-[10px] font-bold transition-all border border-slate-700"
+              >
+                <Edit2 size={10} />
+                EDIT
+              </button>
+            </>
           )}
         </div>
       </div>

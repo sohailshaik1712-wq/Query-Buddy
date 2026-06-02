@@ -34,7 +34,23 @@ const ChatInterface = ({
   const [editTitleValue, setEditTitleValue] = useState("");
   const [isExecutingSQL, setIsExecutingSQL] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
   const hasConnection = Boolean(selectedWorkspace?.database_connection);
+
+  const handleStopGeneration = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+      setIsLoading(false);
+    }
+  };
+
+  const handleEditQuestion = (content: string) => {
+    setInputValue(content);
+    // Focus the textarea
+    const textarea = document.querySelector("textarea");
+    if (textarea) (textarea as HTMLTextAreaElement).focus();
+  };
 
   const handleExecuteSQL = async (messageId: string, sql: string) => {
     if (!selectedWorkspace) return;
@@ -138,6 +154,9 @@ const ChatInterface = ({
     setInputValue("");
     setIsLoading(true);
 
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     try {
       const response = await api.post<Message[]>(
         `/messages/${selectedChatId}`,
@@ -145,12 +164,20 @@ const ChatInterface = ({
           role: "user",
           content: userMsgContent,
         },
+        {
+          signal: controller.signal,
+        },
       );
       setMessages((prev) => [...prev, ...response.data]);
-    } catch (err) {
-      console.error("Failed to send message", err);
+    } catch (err: any) {
+      if (err.name === "CanceledError" || err.name === "AbortError") {
+        console.log("Request stopped by user");
+      } else {
+        console.error("Failed to send message", err);
+      }
     } finally {
       setIsLoading(false);
+      abortControllerRef.current = null;
     }
   };
 
@@ -236,6 +263,7 @@ const ChatInterface = ({
               message={msg}
               isExecutingSQL={isExecutingSQL}
               onExecuteSQL={(sql) => handleExecuteSQL(msg.id, sql)}
+              onEditQuestion={handleEditQuestion}
             />
           ))}
           {isLoading && (
@@ -256,6 +284,7 @@ const ChatInterface = ({
         inputValue={inputValue}
         setInputValue={setInputValue}
         onSendMessage={handleSendMessage}
+        onStop={handleStopGeneration}
         isLoading={isLoading}
         hasConnection={hasConnection}
         onConfigureConnection={onConfigureConnection}

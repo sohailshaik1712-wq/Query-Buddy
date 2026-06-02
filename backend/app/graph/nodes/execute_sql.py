@@ -42,14 +42,22 @@ async def execute_sql_node(state: AgentState):
                     # Convert to list of dicts
                     columns = result.keys()
                     query_results = [dict(zip(columns, row)) for row in rows]
-                    return {"query_results": query_results}
+                    return {"query_results": query_results, "error": None}
                 else:
                     return {
                         "query_results": [
                             {"message": "Query executed successfully, no rows returned"}
-                        ]
+                        ],
+                        "error": None,
                     }
         except Exception as e:
-            return {"error": f"SQL Execution Error: {str(e)}"}
+            error_msg = str(e)
+            # Try to extract the core error message from SQLAlchemy/asyncpg
+            if "relation" in error_msg and "does not exist" in error_msg:
+                error_msg = f"Table not found: {error_msg.split('relation')[1].strip()}"
+            elif "column" in error_msg and "does not exist" in error_msg:
+                error_msg = f"Column not found: {error_msg.split('column')[1].strip()}"
+
+            return {"error": f"SQL Execution Error: {error_msg}"}
         finally:
             await engine.dispose()
