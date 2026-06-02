@@ -34,6 +34,7 @@ interface SidebarProps {
   onUpdateChat: (id: string, title: string) => void;
   isOpen: boolean;
   onClose: () => void;
+  isChatsLoading?: boolean;
 }
 
 const Sidebar = ({
@@ -53,6 +54,7 @@ const Sidebar = ({
   onUpdateChat,
   isOpen,
   onClose,
+  isChatsLoading,
 }: SidebarProps) => {
   const { user, logout } = useAuth();
   const [editingWorkspaceId, setEditingWorkspaceId] = React.useState<
@@ -225,7 +227,22 @@ const Sidebar = ({
             </button>
           )}
           <div className="space-y-1">
-            {chats.map((c) => (
+            {isChatsLoading ? (
+              // Skeleton Loader for Chats
+              <>
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="px-3 py-2 rounded-md bg-slate-800/20 animate-pulse flex items-center gap-3"
+                  >
+                    <div className="w-4 h-4 rounded bg-slate-800/50" />
+                    <div className="h-3 bg-slate-800/50 rounded w-24" />
+                  </div>
+                ))}
+              </>
+            ) : (
+              chats.map((c) => (
+
               <div
                 key={c.id}
                 className={`group flex items-center gap-2 px-3 py-2 rounded-md transition-all ${

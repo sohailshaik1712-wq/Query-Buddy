@@ -12,60 +12,50 @@ export const useWorkspaces = (
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchWorkspaces = useCallback(
-    async (selectFirst = false) => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await api.get<Workspace[]>("/workspaces/");
-        setWorkspaces(response.data);
-        if (selectFirst && response.data.length > 0 && !selectedWorkspace) {
-          // Handle initial selection if needed
-          // We'll leave the actual selection logic to the consumer for flexibility
-        }
-        return response.data;
-      } catch (err) {
-        console.error("Failed to fetch workspaces", err);
-        setError("Failed to load workspaces");
-        return [];
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [selectedWorkspace],
-  );
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
-  const loadWorkspaceDetail = useCallback(async (workspaceId: string) => {
+  const fetchWorkspaces = useCallback(async (selectFirst = false) => {
+    setIsLoading(true);
+    setError(null);
     try {
-      const response = await api.get<Workspace>(`/workspaces/${workspaceId}`);
+      const response = await api.get<Workspace[]>("/workspaces/");
+      setWorkspaces(response.data);
+
+      // If we have a selected workspace, refresh it from the list
+      setSelectedWorkspace((current) => {
+        if (current) {
+          const updated = response.data.find((w) => w.id === current.id);
+          return updated || current;
+        }
+        if (selectFirst && response.data.length > 0) {
+          return response.data[0];
+        }
+        return null;
+      });
+
       return response.data;
     } catch (err) {
-      console.error("Failed to fetch workspace details", err);
-      return null;
+      console.error("Failed to fetch workspaces", err);
+      setError("Failed to load workspaces");
+      return [];
+    } finally {
+      setIsLoading(false);
+      setIsInitialLoading(false);
     }
   }, []);
 
-  const selectWorkspace = useCallback(
-    async (workspace: Workspace | null) => {
-      if (!workspace) {
-        setSelectedWorkspace(null);
-        return;
-      }
+  const selectWorkspace = useCallback(async (workspace: Workspace | null) => {
+    if (!workspace) {
+      setSelectedWorkspace(null);
+      return;
+    }
 
-      setSelectedWorkspace(workspace);
+    // Optimistic update
+    setSelectedWorkspace(workspace);
 
-      // Fetch fresh details (with connection info)
-      const detailed = await loadWorkspaceDetail(workspace.id);
-      if (detailed) {
-        setSelectedWorkspace(detailed);
-        setWorkspaces((prev) =>
-          prev.map((item) => (item.id === detailed.id ? detailed : item)),
-        );
-        if (onWorkspaceSelected) onWorkspaceSelected(detailed);
-      }
-    },
-    [loadWorkspaceDetail, onWorkspaceSelected],
-  );
+    // The list already contains database_connection due to selectinload on backend
+    // So we don't strictly NEED a second fetch unless we want to force refresh
+  }, []);
 
   const createWorkspace = async (data: {
     name: string;
@@ -146,6 +136,7 @@ export const useWorkspaces = (
     refreshSelectedWorkspace,
     setWorkspaces,
     isLoading,
+    isInitialLoading,
     error,
   };
 };

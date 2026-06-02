@@ -20,6 +20,7 @@ export default function Home() {
     deleteWorkspace,
     setSelectedWorkspace,
     setWorkspaces,
+    isInitialLoading,
   } = useWorkspaces();
 
   const {
@@ -30,6 +31,7 @@ export default function Home() {
     deleteChat,
     updateChat,
     isCreatingChat,
+    isLoading: isChatsLoading,
   } = useChats(selectedWorkspace);
 
   const [isWorkspaceModalOpen, setIsWorkspaceModalOpen] = useState(false);
@@ -39,6 +41,19 @@ export default function Home() {
   useEffect(() => {
     fetchWorkspaces(true);
   }, [fetchWorkspaces]);
+
+  if (isInitialLoading) {
+    return (
+      <div className="h-screen w-full bg-slate-950 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
+          <p className="text-slate-400 font-medium animate-pulse">
+            Initializing QueryBuddy...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <ProtectedRoute>
@@ -70,6 +85,7 @@ export default function Home() {
           onUpdateChat={updateChat}
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
+          isChatsLoading={isChatsLoading}
         />
         <ChatInterface
           selectedWorkspace={selectedWorkspace}
