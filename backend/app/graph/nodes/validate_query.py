@@ -7,7 +7,7 @@ from app.graph.state import AgentState
 
 async def validate_query_node(state: AgentState):
     """
-    Evaluates SQL safety and intent using Gemini 2.0 Flash.
+    Evaluates SQL safety and intent using Gemini 1.5 Flash.
     """
     sql_query = state.get("sql_query")
     user_query = state.get("messages")[-1].content
@@ -15,7 +15,7 @@ async def validate_query_node(state: AgentState):
 
     # Use Gemini Flash for critical auditing.
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
+        model="gemini-1.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
     )
 
     prompt = ChatPromptTemplate.from_messages(

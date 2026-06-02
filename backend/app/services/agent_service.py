@@ -39,11 +39,11 @@ class AgentService:
 
         try:
             final_state = await asyncio.wait_for(
-                graph.ainvoke(initial_state), timeout=30
+                graph.ainvoke(initial_state), timeout=60
             )
         except Exception as exc:
             error_message = (
-                "LLM request timed out after 30 seconds"
+                "LLM request timed out after 60 seconds"
                 if isinstance(exc, asyncio.TimeoutError)
                 else str(exc)
             )

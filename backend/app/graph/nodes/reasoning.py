@@ -16,7 +16,7 @@ async def reasoning_node(state: AgentState):
     user_query = messages[-1].content
 
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
+        model="gemini-1.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
     )
 
     system_prompt = f"""You are a Database Analyst. Your goal is to plan a SQL query for {db_type}.

@@ -7,7 +7,7 @@ from app.graph.state import AgentState
 
 async def generate_sql_node(state: AgentState):
     """
-    Generates SQL using Gemini 2.0 Flash for high precision.
+    Generates SQL using Gemini 1.5 Flash for high precision.
     """
     messages = state.get("messages", [])
     schema_info = state.get("schema_info", "")
@@ -21,7 +21,7 @@ async def generate_sql_node(state: AgentState):
 
     # Use Gemini Flash for complex SQL generation.
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
+        model="gemini-1.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
     )
 
     system_prompt = f"""You are a {db_type} expert. Generate a query based on the schema and reasoning plan below.
