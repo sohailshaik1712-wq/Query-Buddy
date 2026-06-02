@@ -242,79 +242,79 @@ const Sidebar = ({
               </>
             ) : (
               chats.map((c) => (
-
-              <div
-                key={c.id}
-                className={`group flex items-center gap-2 px-3 py-2 rounded-md transition-all ${
-                  selectedChatId === c.id
-                    ? "bg-slate-800 text-white shadow-sm"
-                    : "hover:bg-slate-800/50 hover:text-white"
-                }`}
-              >
-                {editingChatId === c.id ? (
-                  <div className="flex-1 flex items-center gap-1">
-                    <input
-                      autoFocus
-                      value={editValue}
-                      onChange={(e) => setEditValue(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") handleUpdateChat();
-                        if (e.key === "Escape") setEditingChatId(null);
-                      }}
-                      className="flex-1 bg-slate-900 border border-indigo-500 rounded px-1.5 py-0.5 text-xs text-white outline-none"
-                    />
-                    <button
-                      onClick={handleUpdateChat}
-                      className="text-emerald-400 hover:text-emerald-300 p-0.5"
-                    >
-                      <Check size={14} />
-                    </button>
-                    <button
-                      onClick={() => setEditingChatId(null)}
-                      className="text-slate-400 hover:text-white p-0.5"
-                    >
-                      <X size={14} />
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => setSelectedChatId(c.id)}
-                      className="flex-1 flex items-center gap-3 text-left overflow-hidden"
-                    >
-                      <MessageSquare
-                        size={16}
-                        className={
-                          selectedChatId === c.id
-                            ? "text-indigo-400"
-                            : "text-slate-500"
-                        }
+                <div
+                  key={c.id}
+                  className={`group flex items-center gap-2 px-3 py-2 rounded-md transition-all ${
+                    selectedChatId === c.id
+                      ? "bg-slate-800 text-white shadow-sm"
+                      : "hover:bg-slate-800/50 hover:text-white"
+                  }`}
+                >
+                  {editingChatId === c.id ? (
+                    <div className="flex-1 flex items-center gap-1">
+                      <input
+                        autoFocus
+                        value={editValue}
+                        onChange={(e) => setEditValue(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleUpdateChat();
+                          if (e.key === "Escape") setEditingChatId(null);
+                        }}
+                        className="flex-1 bg-slate-900 border border-indigo-500 rounded px-1.5 py-0.5 text-xs text-white outline-none"
                       />
-                      <span className="text-sm truncate font-medium">
-                        {c.title || "New Chat"}
-                      </span>
-                    </button>
-                    <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all">
                       <button
-                        onClick={(e) => startEditingChat(e, c)}
-                        className="p-1 hover:text-indigo-400"
+                        onClick={handleUpdateChat}
+                        className="text-emerald-400 hover:text-emerald-300 p-0.5"
                       >
-                        <Edit2 size={14} />
+                        <Check size={14} />
                       </button>
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onDeleteChat(c.id);
-                        }}
-                        className="p-1 hover:text-red-400"
+                        onClick={() => setEditingChatId(null)}
+                        className="text-slate-400 hover:text-white p-0.5"
                       >
-                        <Trash2 size={14} />
+                        <X size={14} />
                       </button>
                     </div>
-                  </>
-                )}
-              </div>
-            ))}
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => setSelectedChatId(c.id)}
+                        className="flex-1 flex items-center gap-3 text-left overflow-hidden"
+                      >
+                        <MessageSquare
+                          size={16}
+                          className={
+                            selectedChatId === c.id
+                              ? "text-indigo-400"
+                              : "text-slate-500"
+                          }
+                        />
+                        <span className="text-sm truncate font-medium">
+                          {c.title || "New Chat"}
+                        </span>
+                      </button>
+                      <div className="flex items-center opacity-0 group-hover:opacity-100 transition-all">
+                        <button
+                          onClick={(e) => startEditingChat(e, c)}
+                          className="p-1 hover:text-indigo-400"
+                        >
+                          <Edit2 size={14} />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDeleteChat(c.id);
+                          }}
+                          className="p-1 hover:text-red-400"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))
+            )}
           </div>
         </div>
 

@@ -15,7 +15,7 @@ class DatabaseService:
         """
         # Construction of connection string (example for Postgres)
         if connection.db_type == "postgresql":
-            url = f"postgresql://{connection.username}:{connection.password}@{connection.host}:{connection.port}/{connection.database}"
+            url = f"postgresql://{connection.username}:{connection.password}@{connection.host}:{connection.port}/{connection.database}?sslmode=require"
             try:
                 engine = create_engine(url, connect_args={"connect_timeout": 5})
                 with engine.connect() as conn:
@@ -35,7 +35,7 @@ class DatabaseService:
         if connection.db_type != "postgresql":
             return f"Unsupported database type: {connection.db_type}"
 
-        url = f"postgresql+asyncpg://{connection.username}:{connection.password}@{connection.host}:{connection.port}/{connection.database}"
+        url = f"postgresql+asyncpg://{connection.username}:{connection.password}@{connection.host}:{connection.port}/{connection.database}?ssl=require"
         try:
             engine = create_async_engine(url)
             async with engine.connect() as conn:
@@ -81,7 +81,7 @@ class DatabaseService:
         if connection.db_type != "postgresql":
             raise ValueError(f"Unsupported database type: {connection.db_type}")
 
-        url = f"postgresql+asyncpg://{connection.username}:{connection.password}@{connection.host}:{connection.port}/{connection.database}"
+        url = f"postgresql+asyncpg://{connection.username}:{connection.password}@{connection.host}:{connection.port}/{connection.database}?ssl=require"
         engine = create_async_engine(url)
         try:
             async with engine.connect() as conn:

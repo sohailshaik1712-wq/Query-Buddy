@@ -18,7 +18,7 @@ export const useWorkspaces = (
     setIsLoading(true);
     setError(null);
     try {
-      const response = await api.get<Workspace[]>("/workspaces/");
+      const response = await api.get<Workspace[]>("/workspaces");
       setWorkspaces(response.data);
 
       // If we have a selected workspace, refresh it from the list
@@ -62,7 +62,7 @@ export const useWorkspaces = (
     description?: string;
   }) => {
     try {
-      const response = await api.post<Workspace>("/workspaces/", data);
+      const response = await api.post<Workspace>("/workspaces", data);
       const newWorkspace = response.data;
       setWorkspaces((prev) => [...prev, newWorkspace]);
       await selectWorkspace(newWorkspace);

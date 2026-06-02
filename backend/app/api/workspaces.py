@@ -19,7 +19,7 @@ from app.services.workspace_service import WorkspaceService
 router = APIRouter()
 
 
-@router.get("/", response_model=List[WorkspaceRead])
+@router.get("", response_model=List[WorkspaceRead])
 async def list_workspaces(
     db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)
 ) -> Any:
@@ -27,7 +27,7 @@ async def list_workspaces(
     return await workspace_service.get_workspaces(current_user.id)
 
 
-@router.post("/", response_model=WorkspaceRead)
+@router.post("", response_model=WorkspaceRead)
 async def create_workspace(
     workspace_in: WorkspaceCreate,
     db: AsyncSession = Depends(get_db),
@@ -37,7 +37,7 @@ async def create_workspace(
     return await workspace_service.create_workspace(current_user.id, workspace_in)
 
 
-@router.patch("/{workspace_id}/", response_model=WorkspaceRead)
+@router.patch("/{workspace_id}", response_model=WorkspaceRead)
 async def update_workspace(
     workspace_id: uuid.UUID,
     workspace_in: WorkspaceUpdate,
@@ -50,7 +50,7 @@ async def update_workspace(
     )
 
 
-@router.get("/{workspace_id}/", response_model=Workspace)
+@router.get("/{workspace_id}", response_model=Workspace)
 async def get_workspace(
     workspace_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
@@ -60,7 +60,7 @@ async def get_workspace(
     return await workspace_service.get_workspace(current_user.id, workspace_id)
 
 
-@router.post("/{workspace_id}/connection/", response_model=DatabaseConnection)
+@router.post("/{workspace_id}/connection", response_model=DatabaseConnection)
 async def set_connection(
     workspace_id: uuid.UUID,
     connection_in: DatabaseConnectionCreate,
@@ -73,7 +73,7 @@ async def set_connection(
     )
 
 
-@router.delete("/{workspace_id}/connection/", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{workspace_id}/connection", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_connection(
     workspace_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
@@ -83,7 +83,7 @@ async def delete_connection(
     await workspace_service.delete_database_connection(current_user.id, workspace_id)
 
 
-@router.delete("/{workspace_id}/", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{workspace_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_workspace(
     workspace_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),

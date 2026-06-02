@@ -23,7 +23,7 @@ async def list_chats(
     return await chat_service.get_chats(current_user.id, workspace_id)
 
 
-@router.post("/", response_model=ChatRead)
+@router.post("", response_model=ChatRead)
 async def create_chat(
     chat_in: ChatCreate,
     db: AsyncSession = Depends(get_db),

@@ -169,8 +169,12 @@ const ChatInterface = ({
         },
       );
       setMessages((prev) => [...prev, ...response.data]);
-    } catch (err: any) {
-      if (err.name === "CanceledError" || err.name === "AbortError") {
+    } catch (err: unknown) {
+      const axiosError = err as { name?: string };
+      if (
+        axiosError.name === "CanceledError" ||
+        axiosError.name === "AbortError"
+      ) {
         console.log("Request stopped by user");
       } else {
         console.error("Failed to send message", err);

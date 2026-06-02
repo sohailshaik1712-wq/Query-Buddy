@@ -49,7 +49,7 @@ export const useChats = (workspace: Workspace | null) => {
 
     setIsCreatingChat(true);
     try {
-      const response = await api.post<Chat>("/chats/", {
+      const response = await api.post<Chat>("/chats", {
         workspace_id: workspace.id,
         title: "New Chat",
       });

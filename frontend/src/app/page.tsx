@@ -6,6 +6,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import CreateWorkspaceModal from "@/components/CreateWorkspaceModal";
 import DatabaseConnectionModal from "@/components/DatabaseConnectionModal";
 import { useState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
 import { useWorkspaces } from "@/hooks/useWorkspaces";
 import { useChats } from "@/hooks/useChats";
 
