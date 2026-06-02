@@ -15,7 +15,7 @@ async def validate_query_node(state: AgentState):
 
     # Use Gemini Flash for critical auditing.
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
+        model="gemini-2.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
     )
 
     prompt = ChatPromptTemplate.from_messages(

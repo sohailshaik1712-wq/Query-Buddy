@@ -21,7 +21,7 @@ async def generate_sql_node(state: AgentState):
 
     # Use Gemini Flash for complex SQL generation.
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
+        model="gemini-2.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
     )
 
     system_prompt = f"""You are a {db_type} expert. Generate a query based on the schema and reasoning plan below.

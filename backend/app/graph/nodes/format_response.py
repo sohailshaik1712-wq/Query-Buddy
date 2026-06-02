@@ -20,7 +20,7 @@ async def format_response_node(state: AgentState):
 
     # Use Gemini Flash for conversational summaries.
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
+        model="gemini-2.5-flash",
         google_api_key=settings.GOOGLE_API_KEY,
         temperature=0.7,
     )
@@ -60,7 +60,7 @@ async def format_response_node(state: AgentState):
         # Fallback to standard 1.5 flash
         try:
             llm_fallback = ChatGoogleGenerativeAI(
-                model="gemini-1.5-flash", google_api_key=settings.GOOGLE_API_KEY
+                model="gemini-2.5-flash", google_api_key=settings.GOOGLE_API_KEY
             )
             response = await (prompt | llm_fallback).ainvoke(prompt_input)
             return {
