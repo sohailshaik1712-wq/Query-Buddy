@@ -19,7 +19,7 @@ from app.services.workspace_service import WorkspaceService
 router = APIRouter()
 
 
-@router.get("", response_model=List[WorkspaceRead])
+@router.get("", response_model=List[Workspace])
 async def list_workspaces(
     db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)
 ) -> Any:
