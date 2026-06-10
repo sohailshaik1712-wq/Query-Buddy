@@ -12,16 +12,22 @@ REPOSITORY="querybuddy-repo"
 # Load values from backend/.env if available
 if [ -f "backend/.env" ]; then
     echo "📄 Loading secrets from backend/.env..."
-    GOOGLE_API_KEY=$(grep GOOGLE_API_KEY backend/.env | cut -d '=' -f2-)
+    DEEPSEEK_API_KEY=$(grep DEEPSEEK_API_KEY backend/.env | cut -d '=' -f2-)
+    DEEPSEEK_API_BASE=$(grep DEEPSEEK_API_BASE backend/.env | cut -d '=' -f2-)
     DATABASE_URL=$(grep DATABASE_URL backend/.env | cut -d '=' -f2-)
     SECRET_KEY=$(grep SECRET_KEY backend/.env | cut -d '=' -f2-)
 fi
 
 # 1.5 Validate Secrets
-if [ -z "$DATABASE_URL" ] || [ -z "$GOOGLE_API_KEY" ] || [ -z "$SECRET_KEY" ]; then
-    echo "❌ Error: One or more required environment variables (DATABASE_URL, GOOGLE_API_KEY, SECRET_KEY) are empty."
+if [ -z "$DATABASE_URL" ] || [ -z "$DEEPSEEK_API_KEY" ] || [ -z "$SECRET_KEY" ]; then
+    echo "❌ Error: One or more required environment variables (DATABASE_URL, DEEPSEEK_API_KEY, SECRET_KEY) are empty."
     echo "Please check your backend/.env file."
     exit 1
+fi
+
+# Default DEEPSEEK_API_BASE if not provided
+if [ -z "$DEEPSEEK_API_BASE" ]; then
+    DEEPSEEK_API_BASE="https://api.deepseek.com"
 fi
 
 # 2. Setup Project and Enable APIs
@@ -68,7 +74,7 @@ gcloud run deploy querybuddy-backend \
     --region "$REGION" \
     --platform managed \
     --allow-unauthenticated \
-    --set-env-vars "DATABASE_URL=$DATABASE_URL,GOOGLE_API_KEY=$GOOGLE_API_KEY,SECRET_KEY=$SECRET_KEY"
+    --set-env-vars "DATABASE_URL=$DATABASE_URL,DEEPSEEK_API_KEY=$DEEPSEEK_API_KEY,DEEPSEEK_API_BASE=$DEEPSEEK_API_BASE,SECRET_KEY=$SECRET_KEY"
 
 # Get the Backend URL
 BACKEND_URL=$(gcloud run services describe querybuddy-backend --region "$REGION" --format 'value(status.url)')

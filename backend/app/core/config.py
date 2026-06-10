@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     # LLM
     GOOGLE_API_KEY: Optional[str] = None
     OPENAI_API_KEY: Optional[str] = None
+    DEEPSEEK_API_KEY: Optional[str] = None
+    DEEPSEEK_API_BASE: str = "https://api.deepseek.com"
 
     # Security
     SECRET_KEY: str = "your-super-secret-key-change-me"

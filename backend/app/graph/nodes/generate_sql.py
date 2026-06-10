@@ -1,13 +1,12 @@
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
 
-from app.core.config import settings
+from app.core.llm import get_llm
 from app.graph.state import AgentState
 
 
 async def generate_sql_node(state: AgentState):
     """
-    Generates SQL using Gemini 1.5 Flash for high precision.
+    Generates SQL using DeepSeek for high precision.
     """
     messages = state.get("messages", [])
     schema_info = state.get("schema_info", "")
@@ -19,10 +18,8 @@ async def generate_sql_node(state: AgentState):
 
     user_query = messages[-1].content
 
-    # Use Gemini Flash for complex SQL generation.
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
-    )
+    # Use DeepSeek for complex SQL generation.
+    llm = get_llm(temperature=0)
 
     system_prompt = f"""You are a {db_type} expert. Generate a query based on the schema and reasoning plan below.
 
@@ -63,4 +60,4 @@ async def generate_sql_node(state: AgentState):
         )
         return {"sql_query": sql, "retry_count": retry_count + 1, "error": None}
     except Exception as e:
-        return {"error": f"Gemini Flash Error: {str(e)}"}
+        return {"error": f"DeepSeek Error: {str(e)}"}

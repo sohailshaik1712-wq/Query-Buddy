@@ -1,22 +1,19 @@
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
 
-from app.core.config import settings
+from app.core.llm import get_llm
 from app.graph.state import AgentState
 
 
 async def validate_query_node(state: AgentState):
     """
-    Evaluates SQL safety and intent using Gemini 1.5 Flash.
+    Evaluates SQL safety and intent using DeepSeek.
     """
     sql_query = state.get("sql_query")
     user_query = state.get("messages")[-1].content
     schema_info = state.get("schema_info")
 
-    # Use Gemini Flash for critical auditing.
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", google_api_key=settings.GOOGLE_API_KEY, temperature=0
-    )
+    # Use DeepSeek for critical auditing.
+    llm = get_llm(temperature=0)
 
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -49,4 +46,4 @@ async def validate_query_node(state: AgentState):
                 "reflection_comment": decision,
             }
     except Exception as e:
-        return {"error": f"Validation Error (Gemini Flash): {str(e)}"}
+        return {"error": f"Validation Error (DeepSeek): {str(e)}"}

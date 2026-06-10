@@ -1,7 +1,6 @@
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI
 
-from app.core.config import settings
+from app.core.llm import get_llm
 from app.graph.state import AgentState
 
 
@@ -15,11 +14,7 @@ async def reasoning_node(state: AgentState):
 
     user_query = messages[-1].content
 
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash-lite",
-        google_api_key=settings.GOOGLE_API_KEY,
-        temperature=0,
-    )
+    llm = get_llm(temperature=0)
 
     system_prompt = f"""You are a Database Analyst. Your goal is to plan a SQL query for {db_type}.
 
